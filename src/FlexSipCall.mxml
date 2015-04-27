@@ -8,16 +8,11 @@
 	<fx:Script>
 		<![CDATA[
 			import com.adobe.crypto.MD5;
-			import com.adobe.serialization.json.JSON;
-			
 			import flash.net.NetConnection;
 			import flash.net.NetStream;
 			import flash.system.Security;
 			import flash.system.SecurityPanel;
-			
-			import mx.core.FlexGlobals;
 			import mx.events.FlexEvent;
-			import mx.utils.ObjectUtil;
 			import flash.media.Microphone;
 			
 			[Bindable]
@@ -59,36 +54,6 @@
 					onDebug("Exception: " + e.toString());
 				}
 				
-				try {
-//					ExternalInterface.marshallExceptions = true;
-//					ExternalInterface.addCallback("login", this.login);
-//					ExternalInterface.addCallback("logout", this.logout);
-//					ExternalInterface.addCallback("makeCall", this.makeCall);
-//					ExternalInterface.addCallback("attach", this.attach);
-//					ExternalInterface.addCallback("answer", this.answer);
-//					ExternalInterface.addCallback("hangup", this.hangup);
-//					ExternalInterface.addCallback("sendDTMF", this.sendDTMF);
-//					ExternalInterface.addCallback("register", this.register);
-//					ExternalInterface.addCallback("unregister", this.unregister);
-//					ExternalInterface.addCallback("transfer", this.transfer);
-//					ExternalInterface.addCallback("three_way", this.three_way);
-//					ExternalInterface.addCallback("getMic", this.getMic);
-////					ExternalInterface.addCallback("micList", this.micList);
-////					ExternalInterface.addCallback("setMic", this.setMic);
-//					ExternalInterface.addCallback("isMuted", this.isMuted);
-//					ExternalInterface.addCallback("showPrivacy", this.showPrivacy);
-//					ExternalInterface.addCallback("connect", this.connect);
-//					ExternalInterface.addCallback("disconnect", this.disconnect);
-//					ExternalInterface.addCallback("join", this.join);
-//					ExternalInterface.addCallback("sendevent", this.sendevent);
-//					ExternalInterface.addCallback("setVolume", this.setVolume);
-//					ExternalInterface.addCallback("setMicVolume", this.setMicVolume);
-					//txtStatus.text = "Connecting...";
-				} catch(e:Error) {
-					//txtStatus.text = e.toString();
-					onDebug("Exception: " + e.toString());
-				}
-				
 				connectionState.text="Not connected ";
 				connect();
 				setupMic();
@@ -123,6 +88,7 @@
 				}
 				else {
 					//ToDo
+					onDebug("Login failed!");
 				}
 			}
 			
@@ -246,10 +212,6 @@
 				return mic_index;
 			}
 			
-//			public function micList():Object {
-//				return JSON.encode(microphoneList);
-//			}
-			
 			public function isMuted():Boolean {
 				if (mic != null) {
 					return mic.muted;
@@ -286,13 +248,9 @@
 			protected function hangUpBtn_clickHandler(event:MouseEvent):void
 			{
 				btnState.text = "hangUpBtn clicked";
-//				if (uuid == attachedUUID) {
 					destroyStreams();	
-//				}
-//				if (netConnection != null) {
-//					netConnection.call("hangup", null, uuid);
-//				}
 			}
+			
 			protected function speakerBtn_clickHandler(event:MouseEvent):void
 			{
 				if (SoundMixer.audioPlaybackMode == AudioPlaybackMode.VOICE)
@@ -303,12 +261,11 @@
 				{
 					SoundMixer.audioPlaybackMode = AudioPlaybackMode.VOICE;
 				}
-				onDebug("   +++SoundMixer.useSpeakerphoneForVoice: " + SoundMixer.useSpeakerphoneForVoice + "+++   ");
+				onDebug(" +++ SoundMixer.audioPlaybackMode is " + SoundMixer.audioPlaybackMode + "+++   ");
 			}
 			
 			protected function connectToSip_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
 				if (netConnection != null) {
 					connect();
 				}
@@ -316,7 +273,6 @@
 			
 			protected function loginBtn_clickHandler(event:MouseEvent):void
 			{
-				// TODO Auto-generated method stub
 				login(username, password);
 			}
 			
@@ -397,27 +353,20 @@
 			}
 			
 			private function onDebug(message:String):void {
-				//statusTxt.text = (statusTxt.text != "") ? statusTxt.text + "\n" + message : message;
 				connectionState.text = connectionState.text +  message;
 			}
 			
 			private function onDisconnected():void {
-//				if (ExternalInterface.available) {
-//					ExternalInterface.call("onDisconnected");
-//				}
+				//ToDo
 			}
 			
 			
 			public function callState(uuid:String, state:String):void {
-//				if (ExternalInterface.available) {
-//					ExternalInterface.call("onCallState", uuid, state);
-//				}
+				//ToDo
 			}
 			
 			public function displayUpdate(uuid:String, name:String, number:String):void {
-//				if (ExternalInterface.available) {
-//					ExternalInterface.call("onDisplayUpdate", uuid, name, number);
-//				}
+				//ToDo
 			}
 			
 			public function incomingCall(uuid:String, name:String, number:String, account:String, evt:Object):void {
@@ -433,18 +382,11 @@
 						}
 					}
 				}
-				
-//				if (ExternalInterface.available) {
-//					ExternalInterface.call("onIncomingCall", uuid, name, number, account, evt);
-//				}
 			}
 			
 			
 			public function event(event:Object):void {
-//				if (ExternalInterface.available) {
-//					ExternalInterface.call("onEvent", JSON.encode(event));
-//				}
-				
+				//ToDo				
 			}
 			private function securityErrorHandler(event:SecurityErrorEvent):void {
 				onDebug("securityErrorHandler: " + event.text);
@@ -460,21 +402,16 @@
 			}
 			
 			private function netStatus (evt:NetStatusEvent ):void {		 
-				
 				onDebug("netStatus: " + evt.info.code);
-				
 				switch(evt.info.code) {
 					
 					case "NetConnection.Connect.Success":
-						//txtStatus.text = "Connected";
 						break;
 					
 					case "NetConnection.Connect.Failed":
 						netConnection = null;
 						incomingNetStream = null;
 						outgoingNetStream = null;
-						//btnCall.label = "Connect";
-						//txtStatus.text = "Failed";
 						onDisconnected();
 						break;
 					
@@ -482,8 +419,6 @@
 						netConnection = null;
 						incomingNetStream = null;
 						outgoingNetStream = null;
-						//btnCall.label = "Connect";
-						//txtStatus.text = "Disconnected";
 						onDisconnected();
 						break;
 					
@@ -491,8 +426,6 @@
 						netConnection = null;
 						incomingNetStream = null;
 						outgoingNetStream = null;
-						//btnCall.label = "Connect";
-						//txtStatus.text = "Rejected";
 						onDisconnected();
 						break;
 					
@@ -519,26 +452,30 @@
 			private function asyncErrorHandler(event:AsyncErrorEvent):void {
 				onDebug("asyncErrorHandler: " + event.text);
 				switch(event.text) {
-					
 					case "onLogin":
-						//txtStatus.text = "Connected";
 						break;
 				}
 			}
-		
-			
 		]]>
 	</fx:Script>
 	<s:VGroup>
+		<!-- Status of this sample -->
 		<s:TextArea id="connectionState" width="100%" height="200"/>
+		<!-- If auto connect failed, we can click connect to reconnect. -->
 		<s:Button id="connectToSip" label="connect" click="connectToSip_clickHandler(event)" width="100%" height="30%"/>
+		<!-- Login to the freeswitch. -->
 		<s:Button id="loginBtn" label="login" click="loginBtn_clickHandler(event)"/>
+		<!-- Dial the number you want to call. -->
 		<s:TextInput id="callDest" prompt="Enter a number to call." width="100%" height="30%"/>
 			<s:HGroup>
+				<!-- Click call to call. -->
 				<s:Button id="callBtn" label="call" click="callBtn_clickHandler(event)" width="50%"/>
-				<s:Button id="hangUpBtn" label="hang up" click="hangUpBtn_clickHandler(event)"  width="50%"/>
+				<!-- Click hangup to hangup. -->
+				<s:Button id="hangUpBtn" label="hangup" click="hangUpBtn_clickHandler(event)"  width="50%"/>
 			</s:HGroup>
-		<s:Button id="speakerBtn" label="speaker" width="50%" click="speakerBtn_clickHandler(event)" />
+		<!-- Click speaker to switch between phone voice speaker and speaker.(For mobile phone only, pads usually don't have to speaker.)  -->
+		<s:Button id="speakerBtn" label="Switch Speaker" width="50%" click="speakerBtn_clickHandler(event)" />
+		<!-- The state of the Call and hungup button. -->
 		<s:Label id="btnState" width="100%" height="20%"/>
 	</s:VGroup>
 </s:Application>
